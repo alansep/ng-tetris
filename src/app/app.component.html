@@ -1,0 +1,11 @@
+<div class="tetris-container">
+  <div class="game-container">
+    <div class="screen">
+      <div class="row" *ngFor="let row of screen">
+        <div class="block" *ngFor="let block of row" [style.background-color]="block.isOn ? block.color : 'black'">
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+</div>

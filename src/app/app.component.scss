@@ -1,0 +1,41 @@
+.tetris-container {
+    background-color: rgb(150, 150, 150);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container{
+    height: 600px;
+    background-color: rgb(78, 78, 78);
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.screen {
+    margin-top: 2%;
+    width: 95%;
+    height: 88%;
+    background-color: black;
+}
+
+.row {
+    width: 100%;
+    height: 5%;
+    background-color: gray;
+    display: flex;
+    flex-direction: row;
+}
+
+.block {
+    margin: 0.5px;
+    width: calc(10% - 2px);
+    height: calc(100% - 2px);
+    border: 0.5px solid rgba(255, 255, 255, 0.863);
+    background-color: black;
+}
