@@ -9,6 +9,7 @@ import { CreateAnotherBlockException } from "./exception/CreateAnotherBlock.mode
 export class Screen {
 
     private _blocks: Block[][];
+    private isBeingCleared: boolean = false;
 
     constructor() {
         this._blocks = [];
@@ -26,58 +27,103 @@ export class Screen {
 
 
     public createGrandBlock(grandBlock: GrandBlock): void {
-        grandBlock.coordinates.forEach(position => {
-            this.blocks[position.y][position.x].turnOn(grandBlock.color);
-          });
+        this.canCreateBlock().then(resolve => {
+            if (resolve) {
+                grandBlock.coordinates.forEach(position => {
+                    this.blocks[position.y][position.x].turnOn(grandBlock.color);
+                });
+            }
+        });
     }
 
 
+
     public movementGrandBlock(grandBlock: GrandBlock, direction: DirectionEnum): void {
-        if(this.canBeMovemented(grandBlock, direction)){
+        if (this.canBeMovemented(grandBlock, direction)) {
             this.changeGrandBlockPosition(grandBlock, direction);
         }
     }
 
     public rotateGrandBlock(grandBlock: GrandBlock): void {
-        if(this.canBeMovementedAfterRotation(grandBlock)) {
+        if (this.canBeMovementedAfterRotation(grandBlock)) {
             this.changeGrandBlockPositionOnRotation(grandBlock);
         }
     }
 
 
+    public canCreateBlock(): Promise<boolean> {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(!this.isBeingCleared);
+            }, 1500);
+        });
+    }
+
+    public clearFullLines(): void {
+        this.isBeingCleared = true;
+        let linesToBeShift: number[] = [];
+        for (let i = 0; i < 20; i++) {
+            let fullLine: boolean = true;
+            for (let j = 0; j < 10; j++) {
+                fullLine = fullLine && this.blocks[i][j].isOn;
+            }
+            if (fullLine) {
+                linesToBeShift.push(i);
+                for (let j = 0; j < 10; j++) {
+                    this.blocks[i][j].turnOff();
+                }
+            }
+        }
+
+        for (let i = linesToBeShift[linesToBeShift.length - 1] - linesToBeShift.length; i > 0; i--) {
+
+            console.log(i);
+            console.log(linesToBeShift.length);
+
+            for (let j = 0; j < 10; j++) {
+                if (this.blocks[i][j].isOn) {
+                    this.blocks[i + linesToBeShift.length][j].turnOn(this.blocks[i][j].color);
+                    this.blocks[i][j].turnOff();
+                }
+            }
+        }
+        this.isBeingCleared = false;
+    }
+
+
     private canBeMovemented(grandBlock: GrandBlock, direction: DirectionEnum): boolean {
-       
-        let coordinates = grandBlock.coordinates;
         
-        try{
+        let coordinates = grandBlock.coordinates;
+
+        try {
             coordinates.forEach(block => {
                 let foundDirection = Direction.of(direction);
                 let foundBlock = this.blocks[block.y + foundDirection.yAxisMovement][block.x + foundDirection.xAxisMovement];
-                if(foundBlock === undefined || (foundBlock.isOn && coordinates.map(coordinates => this.blocks[coordinates.y][coordinates.x]).filter(block => block === foundBlock).length == 0)){
+                if (foundBlock === undefined || (foundBlock.isOn && coordinates.map(coordinates => this.blocks[coordinates.y][coordinates.x]).filter(block => block === foundBlock).length == 0)) {
                     throw new Error();
                 }
             });
             return true;
-        } catch (error){             
-            if(direction == DirectionEnum.DOWN){
+        } catch (error) {
+            if (direction == DirectionEnum.DOWN) {
                 throw new CreateAnotherBlockException();
             } else {
                 return false;
             }
         }
-    
+
     }
 
     private canBeMovementedAfterRotation(grandBlock: GrandBlock): boolean {
-        try{
+        try {
             grandBlock.getCoordinatesAfterRotation().forEach(block => {
                 let foundBlock = this.blocks[block.y][block.x];
-                if(foundBlock === undefined || (foundBlock.isOn && grandBlock.getCoordinatesAfterRotation().map(coordinates => this.blocks[coordinates.y][coordinates.x]).filter(block => block === foundBlock).length == 0)){
+                if (foundBlock === undefined || (foundBlock.isOn && grandBlock.getCoordinatesAfterRotation().map(coordinates => this.blocks[coordinates.y][coordinates.x]).filter(block => block === foundBlock).length == 0)) {
                     throw new Error();
                 }
             });
             return true;
-        } catch (error){
+        } catch (error) {
             console.log(error);
             return false;
         }
@@ -101,5 +147,7 @@ export class Screen {
 
         grandBlock.coordinates.forEach(coordinate => this.blocks[coordinate.y][coordinate.x].turnOn(grandBlock.color));
     }
+
+
 
 }

@@ -6,7 +6,7 @@ import { Rotatable } from "./interfaces/Rotatable.interface";
 
 export class GrandBlockType {
 
-    private static TYPES: Array<GrandBlockType> = [new GrandBlockType(GrandBlockTypeEnum.ORANGE_RICKY, new Coordinate(6,4), new OrangeRicky())];
+    private static TYPES: Array<GrandBlockType> = [new GrandBlockType(GrandBlockTypeEnum.ORANGE_RICKY, new Coordinate(6,1), new OrangeRicky())];
     // BLUE_RICKY,
     // CLEVELAND_Z,
     // RHODE_ISLAND_Z,

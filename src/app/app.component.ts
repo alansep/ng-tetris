@@ -22,7 +22,17 @@ export class AppComponent implements OnInit {
 
       this.screen.createGrandBlock(this.grandBlock);
 
-     // setInterval(() => this.screen.movementGrandBlock(this.grandBlock, DirectionEnum.DOWN), 1000);
+     setInterval(() => {
+      try{
+        this.screen.movementGrandBlock(this.grandBlock, DirectionEnum.DOWN);
+      } catch (exception){
+        this.current_color = this.getNextColor(this.current_color);
+        this.grandBlock = new GrandBlock(GrandBlockTypeEnum.ORANGE_RICKY, this.current_color);
+        this.screen.createGrandBlock(this.grandBlock);
+      }
+      this.screen.clearFullLines();
+    }, 1200);
+      
   }
 
   constructor() {
