@@ -16,8 +16,12 @@ export class Coordinate {
         return this._y;      
     }
 
+    public set x(x:number) {
+        this._x = x;
+    }
 
-    
-
+    public set y(y:number) {
+        this._y = y;
+    }
 
 }
